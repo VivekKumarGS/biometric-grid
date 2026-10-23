@@ -1,0 +1,512 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0f1117;--bg2:#161b27;--bg3:#1e2535;--bg4:#252d40;
+  --teal:#00d4aa;--teal2:#00a884;--teal3:#007a60;
+  --purple:#a855f7;--purple2:#9333ea;
+  --amber:#f59e0b;--red:#ef4444;--blue:#3b82f6;--green:#22c55e;
+  --text:#e8eaf0;--text2:#9ba3b5;
+  /* Was #6b7585, which measured 3.3:1 against --bg3 and 3.7:1 against --bg2 —
+     under the 4.5:1 WCAG AA floor for body text on every dark background.
+     That is why the muted lists (instructions, form hints, table headers,
+     timestamps) read as barely-there grey. #808ca0 is the nearest step on the
+     same blue-grey ramp that clears 4.5:1 on the lightest of them. The light
+     theme never had this problem and keeps its own value below. */
+  --text3:#808ca0;
+  --border:#2a3348;--border2:#3a4560;
+  --font:'DM Sans',sans-serif;--mono:'Space Mono',monospace;
+  --shadow:none;
+  --card:#161b27;
+
+  /* Label colour for text sitting ON a --teal fill. It cannot be a fixed
+     value: --teal is a bright mint in dark mode and a deep green in light, so
+     one choice always fails somewhere. White on the dark theme's teal measures
+     1.9:1 — the old vault buttons were effectively unlabelled. */
+  --on-teal:#04120e;
+
+  /* Status TEXT colours, distinct from the status fills above.
+     --green/--red/--amber are tuned to be seen as a block of colour (a dot, a
+     bar, a chart series). Text needs different values, and they have to swap
+     with the theme: the light tints these sit on barely move between themes,
+     so a pale green that reads at 7:1 on a dark card reads at 1.5:1 on a
+     white one. Every one of these is >= 4.5:1 against its own tinted
+     background in the theme that defines it. */
+  --ok:#4ade80;
+  --bad:#f87171;
+  --warn:#fbbf24;
+  --info:#60a5fa;
+
+  /* Tells the browser to paint its OWN widgets dark: <select> popups, date
+     and time pickers, scrollbars, autofill highlight, spinners. Those are
+     drawn by the platform, not by our CSS, so without this line they come out
+     light-on-light — a dropdown list of white text on a white popup. This is
+     the single declaration that fixes them; styling `option` below is only a
+     fallback for engines that ignore it. */
+  color-scheme: dark;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+
+/* APP SHELL */
+#app{display:flex;height:100vh;flex-direction:row}
+
+/* SIDEBAR */
+.sidebar{width:240px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto}
+.sb-header{padding:1.25rem 1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.sb-logo{width:32px;height:32px;border-radius:8px;background:var(--teal);display:flex;align-items:center;justify-content:center;font-size:0.9rem}
+.sb-title{font-family:var(--mono);font-size:0.85rem;font-weight:700;color:var(--text)}
+.sb-role{font-size:0.7rem;color:var(--text3);margin-top:1px}
+.sb-section{padding:1rem 0.75rem 0.5rem;font-size:0.65rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);font-family:var(--mono)}
+.sb-item{display:flex;align-items:center;gap:10px;padding:0.6rem 1rem;margin:1px 0.5rem;border-radius:8px;cursor:pointer;font-size:0.85rem;color:var(--text2);transition:all 0.15s;border:none;background:none;width:calc(100% - 1rem);text-align:left;text-decoration:none}
+.sb-item:hover{background:var(--bg3);color:var(--text)}
+.sb-item.active{background:rgba(0,212,170,0.1);color:var(--teal);border:1px solid rgba(0,212,170,0.2)}
+.sb-item.active.super{background:rgba(168,85,247,0.1);color:#a855f7;border-color:rgba(168,85,247,0.2)}
+.sb-item.active.emp{background:rgba(245,158,11,0.1);color:var(--amber);border-color:rgba(245,158,11,0.2)}
+.sb-icon{width:16px;text-align:center;font-size:0.95rem}
+.sb-back{margin:1rem;padding:0.6rem 1rem;background:var(--bg3);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:0.8rem;color:var(--text2);font-family:var(--mono);transition:all 0.15s;text-decoration:none;display:block;text-align:center;}
+.sb-back:hover{color:var(--text);border-color:var(--border2)}
+
+/* MAIN CONTENT */
+.main{flex:1;overflow-y:auto;background:var(--bg)}
+.topbar{height:56px;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 1.5rem;gap:1rem;background:var(--bg);position:sticky;top:0;z-index:10}
+.tb-title{font-size:1rem;font-weight:600;flex:1}
+.tb-search{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:0.4rem 0.8rem;font-size:0.85rem;color:var(--text);width:220px;font-family:var(--font)}
+.tb-search:focus{outline:none;border-color:var(--teal2)}
+.avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:600}
+.content{padding:1.5rem}
+
+/* STAT CARDS */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem;margin-bottom:1.5rem}
+.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.2rem}
+.stat-label{font-size:0.73rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:0.5rem;font-family:var(--mono)}
+.stat-value{font-size:1.8rem;font-weight:600;font-family:var(--mono)}
+.stat-sub{font-size:0.75rem;color:var(--text3);margin-top:0.3rem}
+.stat-card.teal .stat-value{color:var(--teal)}
+.stat-card.amber .stat-value{color:var(--amber)}
+.stat-card.red .stat-value{color:var(--red)}
+.stat-card.blue .stat-value{color:var(--blue)}
+.stat-card.green .stat-value{color:var(--green)}
+.stat-card.purple .stat-value{color:#a855f7}
+
+/* TABLES */
+.table-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:1.5rem}
+.table-header{padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:1rem}
+.table-title{font-size:0.95rem;font-weight:500;flex:1}
+table{width:100%;border-collapse:collapse}
+th{padding:0.75rem 1rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.8px;color:var(--text3);border-bottom:1px solid var(--border);text-align:left;font-family:var(--mono);font-weight:400}
+td{padding:0.85rem 1rem;font-size:0.85rem;border-bottom:1px solid var(--border);color:var(--text2)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--bg3)}
+.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:0.72rem;font-weight:500;font-family:var(--mono)}
+.badge.present,.badge.active,.badge.approved,.badge.online{background:rgba(34,197,94,0.1);color:var(--ok);border:1px solid rgba(34,197,94,0.2)}
+.badge.absent,.badge.inactive,.badge.rejected,.badge.offline{background:rgba(239,68,68,0.1);color:var(--bad);border:1px solid rgba(239,68,68,0.2)}
+.badge.late,.badge.pending{background:rgba(245,158,11,0.1);color:var(--warn);border:1px solid rgba(245,158,11,0.2)}
+.badge.manual{background:rgba(59,130,246,0.1);color:var(--info);border:1px solid rgba(59,130,246,0.2)}
+
+/* BUTTONS */
+.btn{padding:0.5rem 1rem;border-radius:8px;font-size:0.82rem;cursor:pointer;border:1px solid;font-family:var(--font);transition:all 0.15s;text-decoration:none;display:inline-block;}
+.btn-teal{background:rgba(0,212,170,0.1);color:var(--teal);border-color:rgba(0,212,170,0.3)}
+.btn-teal:hover{background:rgba(0,212,170,0.2)}
+.btn-red{background:rgba(239,68,68,0.1);color:#f87171;border-color:rgba(239,68,68,0.3)}
+.btn-ghost{background:transparent;color:var(--text2);border-color:var(--border);font-size:0.8rem}
+.btn-ghost:hover{color:var(--text);border-color:var(--border2)}
+
+/* CHARTS (CSS bars) */
+.chart-row{display:flex;align-items:center;gap:10px;margin-bottom:0.6rem}
+.chart-label{width:60px;font-size:0.75rem;color:var(--text3);font-family:var(--mono);text-align:right}
+.chart-bar-bg{flex:1;height:22px;background:var(--bg3);border-radius:4px;overflow:hidden}
+.chart-bar{height:100%;border-radius:4px;transition:width 0.4s;display:flex;align-items:center;padding-left:8px;font-size:0.7rem;font-family:var(--mono)}
+.chart-val{width:40px;font-size:0.75rem;color:var(--text2);font-family:var(--mono)}
+
+/* FORM */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.form-group{display:flex;flex-direction:column;gap:0.4rem}
+.form-label{font-size:0.78rem;color:var(--text3);font-family:var(--mono)}
+.form-input,.form-select{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:0.6rem 0.9rem;font-size:0.85rem;color:var(--text);font-family:var(--font)}
+.form-input:focus,.form-select:focus{outline:none;border-color:var(--teal2)}
+/* appearance:none strips the platform dropdown arrow, which left a <select>
+   looking exactly like a text input — nothing said it could be opened. Draw
+   our own caret, tinted with currentColor so it follows the theme. */
+.form-select{appearance:none;padding-right:2rem;
+  background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239ba3b5' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 0.75rem center}
+
+/* Native dropdown lists.
+   `color-scheme` above handles this in Chrome, Edge and Safari. Firefox on
+   Windows and Linux still paints <option> with the system background while
+   inheriting the select's light text, which is exactly the invisible-list
+   case, so set both explicitly. `select` needs its own colours too: an
+   <option> can only inherit from the control, not from body. */
+select{background:var(--bg3);color:var(--text)}
+select option,
+select optgroup{background:var(--bg2);color:var(--text)}
+
+/* LISTS
+   The `*{padding:0}` reset at the top of this file strips the indent a <ul>
+   needs to show its markers — with no padding the bullets are laid out
+   outside the content box and get clipped away, so the list renders as
+   unmarked lines that run into the text beside them. Restoring the indent
+   here is why DeviceCommands' inline `marginLeft` workaround exists; it can
+   go once this is in. */
+ul,ol{padding-left:1.25rem}
+li{color:var(--text2);margin-bottom:0.25rem}
+li::marker{color:var(--text3)}
+li:last-child{margin-bottom:0}
+/* Lists used as chrome — nav, tabs, card rows — opt out of the above. */
+nav ul,nav ol,.sidebar ul,.sidebar ol,ul.plain,ol.plain{padding-left:0;list-style:none}
+
+/* Small text containers the markup already used but nothing ever defined, so
+   they inherited page background and body text — a panel that did not read as
+   a panel. Built from the theme variables so they follow light mode too. */
+.requirements{background:var(--bg3);border:1px solid var(--border);border-radius:10px;
+  padding:0.85rem 1rem;margin-top:1rem;font-size:0.8rem;color:var(--text2)}
+.requirements strong{color:var(--text);display:block;margin-bottom:0.5rem;font-size:0.78rem}
+.requirements ul{margin:0;list-style:none;padding-left:0}
+.requirements li{color:var(--text2);font-size:0.78rem}
+
+.info-box{background:var(--bg3);border:1px solid var(--border);border-radius:10px;
+  padding:0.85rem 1rem;font-size:0.8rem;color:var(--text2)}
+
+.form-hint{font-size:0.72rem;color:var(--text3);margin-top:0.3rem;line-height:1.4}
+.card-box{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-bottom:1.5rem}
+.card-box h4{font-size:0.9rem;font-weight:500;margin-bottom:1rem;color:var(--text)}
+.section-title{font-size:1.1rem;font-weight:600;margin-bottom:1rem}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+
+/* Attendance trend mini chart */
+.trend-dots{display:flex;align-items:flex-end;gap:6px;height:60px;padding-top:8px}
+.trend-bar{flex:1;background:var(--teal3);border-radius:3px 3px 0 0;transition:height 0.3s;min-height:4px}
+.trend-labels{display:flex;gap:6px;margin-top:4px}
+.trend-label{flex:1;font-size:0.6rem;color:var(--text3);text-align:center;font-family:var(--mono)}
+
+/* Profile */
+.profile-header{display:flex;align-items:center;gap:1.5rem;margin-bottom:1.5rem}
+.profile-av{width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:600}
+
+/* --- Login Page Styles --- */
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  padding: 20px;
+}
+
+.login-container {
+  width: 100%;
+  max-width: 420px;
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.login-back {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text3);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.login-back:hover {
+  color: var(--text);
+}
+
+.login-card {
+  background: var(--card);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 24px 32px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 1.2rem;
+}
+
+.login-logo-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 0.8rem;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+}
+
+.login-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.2rem;
+}
+
+.login-subtitle {
+  color: var(--text3);
+  font-size: 0.9rem;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--text3);
+}
+
+.form-input {
+  width: 100%;
+  padding: 10px 12px 10px 40px;
+  /* -color only: the shorthand reset every .form-select's caret image,
+     repeat and position (it comes later and has the same specificity). */
+  background-color: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--blue);
+  background-color: rgba(255,255,255,0.06);
+  box-shadow: 0 0 0 4px rgba(0, 153, 255, 0.1);
+}
+
+.password-toggle {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  color: var(--text3);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 4px;
+}
+
+.login-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+}
+
+.forgot-link {
+  text-decoration: none;
+  font-weight: 600;
+  transition: opacity 0.2s;
+}
+
+.forgot-link:hover {
+  opacity: 0.8;
+}
+
+.login-btn {
+  margin-top: 0.1rem;
+  padding: 11px;
+  border: none;
+  border-radius: 10px;
+  color: #ffffff !important;
+  font-weight: 700;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.login-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+}
+
+.login-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.login-btn.loading {
+  background: var(--text3) !important;
+}
+
+.login-footer {
+  margin-top: 1rem;
+  text-align: center;
+  color: var(--text3);
+  font-size: 0.68rem;
+  line-height: 1.3;
+}
+
+.login-status-badges {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.status-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,0.04);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  color: var(--text3);
+  border: 1px solid var(--border);
+}
+
+.status-badge .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+}
+
+/* Today card */
+.today-card{background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid var(--teal3);border-radius:12px;padding:1.5rem;margin-bottom:1.5rem;display:flex;gap:1rem;flex-wrap:wrap;justify-content:space-between}
+.today-item{text-align:center;flex:1;min-width:70px;padding:0.5rem}
+.today-val{font-size:1.2rem;font-weight:600;font-family:var(--mono);color:var(--teal);white-space:nowrap}
+.today-lbl{font-size:0.65rem;color:var(--text3);font-family:var(--mono);margin-top:4px;line-height:1.2}
+
+/* Device status */
+.device-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px}
+.device-dot.online{background:var(--green)}
+.device-dot.offline{background:var(--red)}
+
+/* Notification item */
+.notif-item{padding:1rem;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:12px}
+.notif-item:last-child{border-bottom:none}
+.notif-dot{width:8px;height:8px;border-radius:50%;margin-top:5px;flex-shrink:0}
+.notif-text{font-size:0.85rem;color:var(--text2)}
+.notif-time{font-size:0.72rem;color:var(--text3);font-family:var(--mono);margin-top:3px}
+
+.tb-notif { position: relative; font-size: 1.2rem; margin-right: 1rem; cursor: pointer; color: var(--text2); display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 8px; transition: background 0.2s; }
+.tb-notif:hover { background: var(--bg3); color: var(--text); }
+.tb-notif-badge { position: absolute; top: 4px; right: 4px; width: 8px; height: 8px; background: var(--red); border-radius: 50%; }
+
+.sb-signout-wrapper { display: flex; flex-direction: column; gap: 0.5rem; margin-top: auto; padding: 1rem; }
+.sb-signout { display: flex; align-items: center; gap: 10px; padding: 0.6rem 1rem; background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; cursor: pointer; font-size: 0.8rem; color: #f87171; font-family: var(--mono); transition: all 0.15s; text-decoration: none; justify-content: center; }
+.sb-signout:hover { background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.3); }
+
+/* The role-picker gateway is gone: one sign-in form replaced the three
+   role-specific ones, so there is nothing to choose on a landing page.
+   #landing and .grid-bg stay because the login page still uses them; the
+   .role-card / .landing-* / .status-bar rules that lived here went with it.
+   .dot survives — .status-badge .dot on the login page depends on it. */
+#landing{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:2rem;background:var(--bg);position:relative;overflow:hidden}
+.grid-bg{position:absolute;inset:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:40px 40px;opacity:0.3}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--green)}
+
+/* LIGHT MODE */
+:root.light-mode {
+  --bg:#f8fafc;--bg2:#ffffff;--bg3:#f1f5f9;--bg4:#e2e8f0;
+  --teal:#0f766e;--teal2:#0d9488;--teal3:#14b8a6;
+  --purple:#7e22ce;--purple2:#6b21a8;
+  --amber:#d97706;--red:#dc2626;--blue:#2563eb;--green:#16a34a;
+  --text:#0f172a;--text2:#334155;--text3:#475569;
+  --border:#e2e8f0;--border2:#cbd5e1;
+  --shadow: 0 4px 20px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.03);
+  --card:#ffffff;
+  --on-teal:#ffffff;   /* 5.5:1 on the light theme's deeper teal */
+  --ok:#166534;
+  --bad:#b91c1c;
+  --warn:#92400e;
+  --info:#1d4ed8;
+  color-scheme: light;
+}
+
+/* The caret is a data URI, so its colour cannot come from a variable — it has
+   to be restated per theme. */
+:root.light-mode .form-select{
+  background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23334155' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  /* Restated: the sign-in .form-input below the base .form-select uses the
+     `background` shorthand, which resets repeat to `repeat` — so in light
+     mode every dropdown's caret tiled across the whole box. */
+  background-repeat:no-repeat;background-position:right 0.75rem center}
+
+.card-box, .stat-card, .table-wrap, .notif-dropdown { box-shadow: var(--shadow); }
+
+.tb-action-icon {
+  position: relative; font-size: 1.2rem; cursor: pointer; color: var(--text2); display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 8px; transition: background 0.2s; background: transparent; border: none; user-select: none;
+}
+.tb-action-icon:hover { background: var(--bg3); color: var(--text); }
+
+.notif-dropdown {
+  position: absolute; top: calc(100% + 8px); right: 0; width: 320px; background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); z-index: 1000; padding: 0.5rem;
+  max-height: 400px; overflow-y: auto; text-align: left; cursor: default;
+}
+.notif-dropdown .notif-item { padding: 0.75rem; border-bottom: 1px solid var(--border); border-radius:8px;}
+.notif-dropdown .notif-item:last-child { border-bottom: none; }
+.notif-dropdown .notif-item:hover { background: var(--bg3); }
+
+.sidebar.collapsed { display: none; }
+.sidebar { transition: width 0.3s; min-width: 0; }
+.main { transition: margin-left 0.3s; }
+
+
+/* RESPONSIVE QUERIES */
+@media (max-width: 1024px) {
+  .tb-search { width: 160px; }
+}
+
+@media (max-width: 768px) {
+  #app { position: relative; }
+  .sidebar { position: fixed; height: 100vh; z-index: 1000; left: -100%; transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1); width: 240px; }
+  .sidebar.open { left: 0; }
+  
+  .sb-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999; display: none; backdrop-filter: blur(2px); }
+  .sb-backdrop.visible { display: block; }
+  
+  .main { width: 100%; }
+  .topbar { padding: 0 1rem; }
+  .tb-search { display: none; }
+  .tb-hamburger { display: flex !important; }
+  
+  .two-col, .form-grid { grid-template-columns: 1fr; gap: 1rem; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+  
+  .table-wrap { overflow-x: auto; }
+  table { min-width: 600px; }
+}
+
+@media (max-width: 480px) {
+  .stats-grid { grid-template-columns: 1fr; }
+  .stat-value { font-size: 1.5rem; }
+  .content { padding: 1rem; }
+  .tb-title { font-size: 0.9rem; }
+  .notif-dropdown { width: 280px; right: -50px; }
+  .today-item { min-width: 40%; }
+}
+

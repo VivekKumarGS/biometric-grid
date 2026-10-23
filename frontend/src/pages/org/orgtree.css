@@ -1,0 +1,285 @@
+/* Organisation tree. Theme variables only, so light and dark both work. */
+
+.ot-bar { display: flex; gap: .6rem; align-items: center; flex-wrap: wrap; margin-bottom: 1rem; }
+.ot-bar .grow { flex: 1; }
+.ot-search { position: relative; flex: 1 1 260px; max-width: 420px; }
+.ot-search input {
+  width: 100%; height: 38px; padding: 0 .75rem 0 2.1rem; border-radius: 9px;
+  border: 1px solid var(--border2); background-color: var(--bg2); color: var(--text); font-family: inherit; font-size: .85rem;
+}
+.ot-search svg { position: absolute; left: .7rem; top: 50%; transform: translateY(-50%); color: var(--text3); }
+.ot-results {
+  position: absolute; z-index: 20; top: calc(100% + 4px); left: 0; right: 0; max-height: 340px; overflow-y: auto;
+  background: var(--bg2); border: 1px solid var(--border2); border-radius: 10px; box-shadow: 0 12px 30px rgba(0,0,0,.18);
+}
+.ot-result { display: flex; gap: .6rem; align-items: center; width: 100%; padding: .5rem .7rem; border: none; background: none;
+  text-align: left; cursor: pointer; color: var(--text); font-family: inherit; border-top: 1px solid var(--border); }
+.ot-result:first-child { border-top: none; }
+.ot-result:hover { background: var(--bg3); }
+
+.ot-tree { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: .8rem; box-shadow: var(--shadow); }
+
+.ot-node { margin: 0; }
+.ot-children { margin-left: 1.05rem; padding-left: .9rem; border-left: 1px dashed var(--border2); }
+@media (max-width: 560px) { .ot-children { margin-left: .5rem; padding-left: .55rem; } }
+
+.ot-row {
+  display: flex; align-items: center; gap: .55rem; padding: .42rem .5rem; border-radius: 9px;
+  min-height: 40px; color: var(--text); flex-wrap: wrap;
+}
+.ot-row.clickable { cursor: pointer; }
+.ot-row.clickable:hover { background: var(--bg3); }
+.ot-row.hit { background: rgba(20,184,166,.14); box-shadow: inset 2px 0 0 var(--teal); }
+.ot-toggle { width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; border: none;
+  background: none; color: var(--text3); cursor: pointer; border-radius: 6px; flex: none; }
+.ot-toggle:hover { background: var(--bg4); color: var(--text); }
+.ot-spacer { width: 22px; flex: none; }
+
+.ot-kind { width: 30px; height: 30px; border-radius: 9px; display: inline-flex; align-items: center; justify-content: center; flex: none; }
+.ot-kind.platform { background: rgba(236,72,153,.14); color: #ec4899; }
+.ot-kind.org { background: rgba(168,85,247,.14); color: var(--purple); }
+.ot-kind.dept { background: rgba(59,130,246,.12); color: var(--info); }
+.ot-kind.group { background: var(--bg3); color: var(--text3); }
+
+.ot-avatar {
+  width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
+  font-size: .72rem; font-weight: 700; flex: none; letter-spacing: .02em;
+}
+.ot-avatar.tenant_admin { background: rgba(168,85,247,.16); color: var(--purple); }
+.ot-avatar.org_admin { background: rgba(20,184,166,.16); color: var(--teal); }
+.ot-avatar.employee { background: rgba(245,158,11,.14); color: var(--warn); }
+.ot-avatar.super_admin { background: rgba(236,72,153,.16); color: #ec4899; }
+.ot-avatar.big { width: 52px; height: 52px; font-size: 1.05rem; }
+
+.ot-name { font-weight: 600; font-size: .88rem; }
+.ot-meta { font-size: .74rem; color: var(--text3); font-family: var(--mono); }
+.ot-role { font-size: .66rem; font-weight: 700; padding: .08rem .45rem; border-radius: 999px; white-space: nowrap; }
+.ot-role.tenant_admin { background: rgba(168,85,247,.14); color: var(--purple); }
+.ot-role.org_admin { background: rgba(20,184,166,.14); color: var(--teal); }
+.ot-role.employee { background: var(--bg3); color: var(--text3); }
+.ot-role.hr { background: rgba(59,130,246,.12); color: var(--info); }
+.ot-count { font-size: .72rem; color: var(--text3); }
+.ot-warn { font-size: .68rem; font-weight: 600; padding: .08rem .45rem; border-radius: 999px; background: rgba(245,158,11,.14); color: var(--warn); white-space: nowrap; }
+.ot-actions { margin-left: auto; display: flex; gap: .35rem; flex-wrap: wrap; }
+.ot-mini {
+  border: 1px solid var(--border); background: var(--bg2); color: var(--text2); border-radius: 7px;
+  padding: .2rem .5rem; font-size: .72rem; cursor: pointer; font-family: inherit; display: inline-flex; align-items: center; gap: .25rem;
+}
+.ot-mini:hover { color: var(--text); border-color: var(--border2); }
+.ot-empty { font-size: .78rem; color: var(--text3); padding: .3rem .5rem .3rem 2.4rem; }
+
+.ot-inline { display: flex; gap: .4rem; align-items: center; padding: .3rem .5rem .5rem 2.4rem; flex-wrap: wrap; }
+.ot-inline input, .ot-inline select {
+  height: 34px; padding: 0 .6rem; border-radius: 8px; border: 1px solid var(--border2);
+  background-color: var(--bg2); color: var(--text); font-family: inherit; font-size: .82rem; min-width: 180px;
+}
+
+.ot-profile-head { display: flex; gap: .9rem; align-items: center; margin: .4rem 0 1rem; }
+.ot-temp {
+  font-family: var(--mono); font-size: 1rem; padding: .5rem .7rem; border-radius: 8px; background: var(--bg3);
+  border: 1px dashed var(--teal); color: var(--text); user-select: all; word-break: break-all;
+}
+
+/* ── org chart ────────────────────────────────────────────────────────────────
+ * A top-down tree drawn with nested lists. Each <li> draws the line up to its
+ * siblings' bar (::before / ::after), and each nested <ul> draws the line down
+ * from its parent (ul ul::before). Pure CSS, so it follows the theme and needs
+ * no layout library. */
+
+.oc-tools { display: flex; align-items: center; gap: .35rem; flex-wrap: wrap; margin-bottom: .6rem; }
+.oc-tools .grow { flex: 1; }
+
+.oc-viewport {
+  overflow: auto;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  padding: 1.4rem 1rem 2rem;
+  min-height: 320px;
+  max-height: calc(100vh - 240px);
+  /* Faint dot grid, so the chart reads as a canvas rather than a page. */
+  background-image: radial-gradient(var(--border) 1px, transparent 1px);
+  background-size: 18px 18px;
+}
+
+.oc { display: inline-block; min-width: 100%; text-align: center; }
+.oc ul {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  margin: 0;
+  padding: 22px 0 0;
+}
+.oc > ul { padding-top: 0; }
+.oc li {
+  position: relative;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 22px 10px 0;
+}
+.oc > ul > li { padding-top: 0; }
+
+/* The horizontal bar over siblings, and the drop to each child. */
+.oc li::before, .oc li::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 50%;
+  width: 50%;
+  height: 22px;
+  border-top: 2px solid var(--border2);
+}
+.oc li::after { right: auto; left: 50%; border-left: 2px solid var(--border2); }
+.oc li:only-child::before, .oc li:only-child::after { display: none; }
+.oc li:only-child { padding-top: 22px; }
+.oc > ul > li:only-child { padding-top: 0; }
+.oc li:only-child > .oc-card, .oc li:only-child > .oc-person, .oc li:only-child > .oc-label, .oc li:only-child > .oc-team { position: relative; }
+.oc ul ul > li:only-child::after { display: block; border-top: none; left: 50%; width: 0; }
+.oc li:first-child::before, .oc li:last-child::after { border: 0 none; }
+.oc li:last-child::before { border-right: 2px solid var(--border2); border-radius: 0 8px 0 0; }
+.oc li:first-child::after { border-radius: 8px 0 0 0; }
+/* The drop from a parent card to its children's bar. */
+.oc ul ul::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  height: 22px;
+  border-left: 2px solid var(--border2);
+}
+
+/* Cards: platform, organisation, department. */
+.oc-card {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .35rem;
+  min-width: 170px;
+  max-width: 320px;
+  padding: .7rem .9rem .85rem;
+  border-radius: 12px;
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  box-shadow: 0 2px 10px rgba(0,0,0,.06);
+}
+.oc-card.platform { border-top: 3px solid #ec4899; }
+.oc-card.org { border-top: 3px solid var(--purple); }
+.oc-card.dept { border-top: 3px solid var(--info); }
+.oc-card-head { display: flex; align-items: center; gap: .5rem; }
+.oc-card-text { display: flex; flex-direction: column; align-items: flex-start; text-align: left; min-width: 0; }
+.oc-card-title { font-weight: 700; font-size: .9rem; color: var(--text); white-space: nowrap; line-height: 1.25; }
+.oc-card-sub { font-size: .7rem; color: var(--text3); white-space: nowrap; line-height: 1.3; }
+.oc-warns { display: flex; flex-wrap: wrap; gap: .25rem; justify-content: center; }
+.oc-card-actions { display: flex; gap: .3rem; flex-wrap: wrap; justify-content: center; }
+.oc-toggle {
+  position: absolute;
+  bottom: -11px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1px solid var(--border2);
+  background: var(--bg2);
+  color: var(--text2);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2;
+}
+.oc-toggle:hover { color: var(--text); border-color: var(--teal); }
+
+/* People. */
+.oc-person, .oc-member {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  border: 1px solid var(--border2);
+  background: var(--bg2);
+  border-radius: 999px;
+  padding: .3rem .8rem .3rem .3rem;
+  cursor: pointer;
+  font-family: inherit;
+  color: var(--text);
+  text-align: left;
+  box-shadow: 0 1px 6px rgba(0,0,0,.05);
+  transition: border-color .12s, box-shadow .12s;
+}
+.oc-person:hover, .oc-member:hover { border-color: var(--teal); }
+.oc-person.tenant_admin { border-color: rgba(168,85,247,.45); }
+.oc-person.org_admin { border-color: rgba(20,184,166,.45); }
+.oc-person.hit, .oc-member.hit { box-shadow: 0 0 0 3px rgba(20,184,166,.35); border-color: var(--teal); }
+.oc-person, .oc-member { flex: none; white-space: nowrap; }
+.oc-person-text { display: flex; flex-direction: column; align-items: flex-start; min-width: 0; line-height: 1.25; }
+.oc-person-name { font-size: .8rem; font-weight: 600; white-space: nowrap; }
+.oc-person-sub { font-size: .68rem; color: var(--text3); display: inline-flex; gap: .3rem; align-items: center; white-space: nowrap; }
+.oc-person-sub .code { font-family: var(--mono); font-size: .66rem; }
+.oc-label {
+  font-size: .64rem; color: var(--text3); display: inline-flex; gap: .3rem; align-items: center;
+  margin-bottom: .35rem; text-transform: uppercase; letter-spacing: .05em; white-space: nowrap; line-height: 1;
+  background: var(--bg2); padding: .15rem .4rem; border-radius: 6px;
+}
+/* The label sits on the connector, so the line runs into it rather than past it. */
+.oc li > .oc-label + .oc-person { margin-top: 0; }
+
+/* A team hangs under its admin as a column, joined by one line. */
+.oc-team {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: .35rem;
+  margin-top: 18px;
+  padding-top: 0;
+}
+.oc-person + .oc-team::before {
+  content: '';
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  height: 18px;
+  border-left: 2px solid var(--border2);
+}
+.oc-member { border-radius: 10px; }
+.oc-team-empty { white-space: nowrap; font-size: .72rem; color: var(--text3); padding: .4rem .6rem; border: 1px dashed var(--border2); border-radius: 8px; margin-top: 6px; background: var(--bg2); }
+
+/* ── view toggle (Chart / List) ───────────────────────────────────────────── */
+.ot-viewtoggle { display: inline-flex; border: 1px solid var(--border2); border-radius: 9px; overflow: hidden; flex: none; }
+.ot-viewtoggle button {
+  display: inline-flex; align-items: center; gap: .3rem; border: none; background: var(--bg2);
+  color: var(--text2); padding: .4rem .7rem; font-family: inherit; font-size: .78rem; cursor: pointer;
+}
+.ot-viewtoggle button + button { border-left: 1px solid var(--border2); }
+.ot-viewtoggle button.active { background: var(--teal); color: var(--on-teal); font-weight: 600; }
+
+/* ── list view (the earlier indented look) ────────────────────────────────── */
+.ol-node { margin: 0; }
+.ol-children { margin-left: 1.05rem; padding-left: .9rem; border-left: 1px dashed var(--border2); }
+@media (max-width: 560px) { .ol-children { margin-left: .5rem; padding-left: .55rem; } }
+
+.ol-row {
+  display: flex; align-items: center; gap: .55rem; padding: .42rem .5rem; border-radius: 9px;
+  min-height: 40px; color: var(--text); width: 100%; text-align: left; border: none; background: none;
+  font-family: inherit; font-size: inherit; flex-wrap: wrap;
+}
+.ol-row.person { cursor: pointer; }
+.ol-row.person:hover { background: var(--bg3); }
+.ol-row.person.hit { background: rgba(20,184,166,.14); box-shadow: inset 2px 0 0 var(--teal); }
+.ol-indent { width: 22px; flex: none; }
+.ol-toggle {
+  width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center;
+  border: none; background: none; color: var(--text3); cursor: pointer; border-radius: 6px; flex: none;
+}
+.ol-toggle:hover { background: var(--bg4); color: var(--text); }
+.ol-name { font-weight: 600; font-size: .88rem; }
+.ol-code { font-size: .74rem; color: var(--text3); font-family: var(--mono); }
+.ol-row.label {
+  font-size: .64rem; color: var(--text3); text-transform: uppercase; letter-spacing: .05em;
+  min-height: 0; padding: .35rem .5rem .1rem; gap: .3rem;
+}
+.ol-empty { font-size: .78rem; color: var(--text3); padding: .3rem .5rem .3rem 2.4rem; }
